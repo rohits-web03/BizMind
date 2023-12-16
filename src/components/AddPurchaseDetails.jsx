@@ -1,33 +1,82 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 
 export default function AddPurchaseDetails({
   addSaleModalSetting,
   products,
+  supppliers,
   handlePageUpdate,
   authContext
 }) {
-  const [purchase, setPurchase] = useState({
-    userID: authContext.user,
-    productID: "",
-    quantityPurchased: "",
-    purchaseDate: "",
-    totalPurchaseAmount: "",
-  });
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
+  const [Suppliers,setSuppliers]=useState([]);
+  const [purchase, setPurchase] = useState({
+    merchant_id: authContext.user,
+    product_id: "",
+    units_purchased: "",
+    date_purchased: "",
+    total_cost_price: "",
+    cost_price_per_unit: 0, // Initialize to 0 (will be calculated later)
+    supplier_id: ""
+  });
 
-  console.log("PPu: ", purchase);
+  const formatDate = (dateString) => {
+    const [year, month, day] = dateString.split('-');
+    return `${month}/${day}/${year}`;
+  };
+  
+  // Calculate cost_price_per_unit whenever units_purchased or total_cost_price changes
+  useEffect(() => {
+    const totalCost = parseInt(purchase.total_cost_price);
+    const units = parseInt(purchase.units_purchased);
+  
+    // Avoid division by zero and ensure units and totalCost are numbers
+    if (!isNaN(totalCost) && !isNaN(units) && units !== 0) {
+      const costPerUnit = totalCost / units;
+      setPurchase(prevPurchase => ({
+        ...prevPurchase,
+        cost_price_per_unit: costPerUnit || 0 // Ensure cost_price_per_unit is a number
+      }));
+    }
+  }, [purchase.total_cost_price, purchase.units_purchased]); // Trigger recalculation when these values change
+
+  useEffect(() => {
+
+      // Perform API fetch here
+      fetch(`https://bizminds-backend.onrender.com/api/suppliers/${0}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          setSuppliers(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
+
+  }, []);
 
   // Handling Input Change for input fields
   const handleInputChange = (key, value) => {
-    setPurchase({ ...purchase, [key]: value });
+    if(key==="date_purchased"){
+      const formatedDate=formatDate(value);
+      setPurchase(prevPurchase => ({
+        ...prevPurchase,
+        [key]:formatedDate
+      }));
+    } else{
+      setPurchase(prevPurchase => ({
+        ...prevPurchase,
+        [key]: value
+      }));
+    }
   };
 
   // POST Data
   const addSale = () => {
-    fetch("http://localhost:4000/api/purchase/add", {
+    console.log(purchase)
+    fetch("https://bizminds-backend.onrender.com/api/purchase/add", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -97,24 +146,51 @@ export default function AddPurchaseDetails({
                               htmlFor="productID"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Product Name
+                              Product ID
                             </label>
                             <select
                               id="productID"
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              name="productID"
+                              name="product_id"
+                              value={purchase.product_id}
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
+                              >
+                                <option value="">Select Products</option>
+                                {products.map((element, index) => {
+                                  return (
+                                    <option key={element} value={element}>
+                                      {element}
+                                    </option>
+                                  );
+                                })}
+                            </select>
+                          </div>
+                          <div>
+                            <label
+                              htmlFor="supplier_id"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              <option selected="">Select Products</option>
-                              {products.map((element, index) => {
-                                return (
-                                  <option key={element._id} value={element._id}>
-                                    {element.name}
-                                  </option>
-                                );
-                              })}
+                              Supplier ID
+                            </label>
+                            <select
+                              id="supplier_id"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              name="supplier_id"
+                              value={purchase.supplier_id}
+                              onChange={(e) =>
+                                handleInputChange(e.target.name, e.target.value)
+                              }
+                              >
+                                <option value="">Select Suppliers</option>
+                                {Suppliers.map((element, index) => {
+                                  return (
+                                    <option key={element._id} value={element.supplier_id}>
+                                      {element.supplier_id}
+                                    </option>
+                                  );
+                                })}
                             </select>
                           </div>
                           <div>
@@ -122,13 +198,13 @@ export default function AddPurchaseDetails({
                               htmlFor="quantityPurchased"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Quantity Purchased
+                              Units Purchased
                             </label>
                             <input
                               type="number"
-                              name="quantityPurchased"
+                              name="units_purchased"
                               id="quantityPurchased"
-                              value={purchase.quantityPurchased}
+                              value={purchase.units_purchased}
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
@@ -145,9 +221,9 @@ export default function AddPurchaseDetails({
                             </label>
                             <input
                               type="number"
-                              name="totalPurchaseAmount"
+                              name="total_cost_price"
                               id="price"
-                              value={purchase.totalPurchaseAmount}
+                              value={purchase.total_cost_price}
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
@@ -171,8 +247,8 @@ export default function AddPurchaseDetails({
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               type="date"
                               id="purchaseDate"
-                              name="purchaseDate"
-                              value={purchase.purchaseDate}
+                              name="date_purchased"
+                              value={purchase.date_purchased}
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
