@@ -17,9 +17,10 @@ function PurchaseDetails() {
 
   // Fetching Data of All Purchase items
   const fetchPurchaseData = () => {
-    fetch(`http://localhost:4000/api/purchase/get/${authContext.user}`)
+    fetch(`https://bizminds-backend.onrender.com/api/purchase/get/purchase_data/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         setAllPurchaseData(data);
       })
       .catch((err) => console.log(err));
@@ -27,10 +28,11 @@ function PurchaseDetails() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
+    fetch(`http://localhost:3000/api/stocks/inventory/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
-        setAllProducts(data);
+        console.log(data[0].products);
+        setAllProducts(data[0].products);
       })
       .catch((err) => console.log(err));
   };
@@ -77,7 +79,16 @@ function PurchaseDetails() {
             <thead>
               <tr>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Product ID
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Product Name
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Supplier ID
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Cost Per Unit
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Quantity Purchased
@@ -92,23 +103,32 @@ function PurchaseDetails() {
             </thead>
 
             <tbody className="divide-y divide-gray-200">
-              {purchase.map((element, index) => {
+              {purchase && purchase.map((element, index) => {
                 return (
                   <tr key={element._id}>
+                  <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element.product_id}
+                    </td>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element.ProductID?.name}
+                      Rice
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2  text-gray-900">
+                      {element.supplier_id}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.QuantityPurchased}
+                      {element.cost_price_per_unit}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {new Date(element.PurchaseDate).toLocaleDateString() ==
+                      {element.units_purchased}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                      {new Date(element.date_purchased).toLocaleDateString() ==
                       new Date().toLocaleDateString()
                         ? "Today"
-                        : element.PurchaseDate}
+                        : element.date_purchased}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      ${element.TotalPurchaseAmount}
+                      Rs {element.total_cost_price}
                     </td>
                   </tr>
                 );
