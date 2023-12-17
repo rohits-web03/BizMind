@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import login from "../assets/Login.png";
+import login from "../../public/bizzsense_image.jpg";
 
 function Register() {
   const [form, setForm] = useState({
@@ -49,11 +49,11 @@ function Register() {
       <div className="grid grid-cols-1 sm:grid-cols-2 h-screen  items-center place-items-center">
         <div className="w-full max-w-md space-y-8  p-10 rounded-lg">
           <div>
-            <img
+            {/* <img
               className="mx-auto h-12 w-auto"
               src={logo}
               alt="Your Company"
-            />
+            /> */}
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
               Register your account
             </h2>
@@ -122,7 +122,7 @@ function Register() {
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <input
                   id="remember-me"
                   name="remember-me"
@@ -137,7 +137,7 @@ function Register() {
                 >
                   I Agree Terms & Conditons
                 </label>
-              </div>
+              </div> */}
 
               <div className="text-sm">
                 <span

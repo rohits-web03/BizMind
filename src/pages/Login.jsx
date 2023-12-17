@@ -2,8 +2,8 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../AuthContext";
-import logo from "../assets/logo.png";
-import signup from "../assets/signup.jpg";
+// import logo from "../assets/logo.png";
+import signup from "../../public/bizzsense_image.jpg";
 
 function Login() {
   const [form, setForm] = useState({
@@ -73,22 +73,15 @@ function Login() {
         </div>
         <div className="w-full max-w-md space-y-8 p-10 rounded-lg">
           <div>
-            <img
+            {/* <img
               className="mx-auto h-12 w-auto"
               src={logo}
               alt="Your Company"
-            />
+            /> */}
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
               Signin to your account
             </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
-              Or
-              <span
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                start your 14-day free trial
-              </span>
-            </p>
+
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             {/* <input type="hidden" name="remember" defaultValue="true" /> */}
@@ -128,7 +121,7 @@ function Login() {
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
+              {/* <div className="flex items-center">
                 <input
                   id="remember-me"
                   name="remember-me"
@@ -141,7 +134,7 @@ function Login() {
                 >
                   Remember me
                 </label>
-              </div>
+              </div> */}
 
               <div className="text-sm">
                 <span

@@ -128,7 +128,7 @@ function Sales() {
                       {element.date_sold}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      ${element.total_selling_price}
+                      Rs {element.total_selling_price}
                     </td>
                   </tr>
                 );
