@@ -13,23 +13,23 @@ function Sales() {
 
   useEffect(() => {
     fetchSalesData();
-    fetchProductsData();
-    fetchStoresData();
+    // fetchProductsData();
+    // fetchStoresData();
   }, [updatePage]);
 
   // Fetching Data of All Sales
   const fetchSalesData = () => {
-    fetch(`http://localhost:4000/api/sales/get/${authContext.user}`)
+    fetch(`https://bizminds-backend.onrender.com/api/sales/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
-        setAllSalesData(data);
+        setAllSalesData(data.salesData);
       })
       .catch((err) => console.log(err));
   };
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
+    fetch(`https://bizminds-backend.onrender.com/api/product/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         setAllProducts(data);
@@ -39,7 +39,7 @@ function Sales() {
 
   // Fetching Data of All Stores
   const fetchStoresData = () => {
-    fetch(`http://localhost:4000/api/store/get/${authContext.user}`)
+    fetch(`https://bizminds-backend.onrender.com/api/store/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         setAllStores(data);
@@ -88,41 +88,47 @@ function Sales() {
             <thead>
               <tr>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Product ID
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Product Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Store Name
+                  Price per unit
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Stock Sold
+                  Units Sold
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Sales Date
+                  Date
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Total Sale Amount
+                  Total Sales Amount
                 </th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-200">
-              {sales.map((element, index) => {
+              {sales && sales.map((element, index) => {
                 return (
                   <tr key={element._id}>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
-                      {element.ProductID?.name}
+                      {element.product_id}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.StoreID?.name}
+                      Rice
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.StockSold}
+                      {element.selling_price_per_unit}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.SaleDate}
+                      {element.units_sold}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      ${element.TotalSaleAmount}
+                      {element.date_sold}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                      ${element.total_selling_price}
                     </td>
                   </tr>
                 );

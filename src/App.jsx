@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import Store from "./pages/Store";
 import Sales from "./pages/Sales";
 import PurchaseDetails from "./pages/PurchaseDetails";
+import Operations_Overview from "./pages/Operations";
 
 const App = () => {
   const [user, setUser] = useState("");
@@ -22,7 +23,7 @@ const App = () => {
 
   useEffect(() => {
     if (myLoginUser) {
-      setUser(myLoginUser._id);
+      setUser(myLoginUser.merchant_id);
       setLoader(false);
       // console.log("inside effect", myLoginUser)
     } else {
@@ -76,6 +77,7 @@ const App = () => {
             <Route path="/purchase-details" element={<PurchaseDetails />} />
             <Route path="/sales" element={<Sales />} />
             <Route path="/manage-store" element={<Store />} />
+            <Route path="/operations-overview" element={<Operations_Overview />} />
           </Route>
           <Route path="*" element={<NoPageFound />} />
         </Routes>

@@ -3,7 +3,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import AuthContext from "../AuthContext";
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../assets/BizSense Logo.png";
 
 const navigation = [
   { name: "Dashboard", href: "/", current: true },
@@ -32,15 +32,15 @@ export default function Header() {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <div className="flex justify-center items-center gap-2">
+                      <div className="flex justify-start items-center gap-2">
                         <img
-                          className="h-8 w-8"
+                          className="h-12 w-58"
                           src={logo} 
                           alt="Inventory Management System"
                         />
-                        <span className="font-bold text-white italic">
-                          Inventory Management
-                        </span>
+                        {/* <span className="font-bold text-white italic text-3xl">
+                          BizSense
+                        </span> */}
                       </div>
                     </div>
                   </div>
@@ -142,17 +142,15 @@ export default function Header() {
                 <div className="border-t border-gray-700 pt-4 pb-3">
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
-                      <img
+                      {/* <img
                         className="h-10 w-10 rounded-full"
                         src={localStorageData.imageUrl}
                         alt="profile"
-                      />
+                      /> */}
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium leading-none text-white">
-                        {localStorageData.firstName +
-                          " " +
-                          localStorageData.lastName}
+                        {localStorageData.name}
                       </div>
                       <div className="text-sm font-medium leading-none text-gray-400">
                         {localStorageData.email}

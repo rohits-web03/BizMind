@@ -21,12 +21,12 @@ function Login() {
 
   const authCheck = () => {
     setTimeout(() => {
-      fetch("http://localhost:4000/api/login")
+      fetch("https://bizminds-backend.onrender.com/api/login")
         .then((response) => response.json())
         .then((data) => {
           alert("Successfully Login");
           localStorage.setItem("user", JSON.stringify(data));
-          authContext.signin(data._id, () => {
+          authContext.signin(data, () => {
             navigate("/");
           });
         })
@@ -42,7 +42,7 @@ function Login() {
     if (form.email === "" || form.password === "") {
       alert("To login user, enter details to proceed...");
     } else {
-      fetch("http://localhost:4000/api/login", {
+      fetch("https://bizminds-backend.onrender.com/api/login", {
         method: "POST",
         headers: {
           "Content-type": "application/json",

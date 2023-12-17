@@ -12,6 +12,108 @@ function Dashboard() {
   const [stores, setStores] = useState([]);
   const [products, setProducts] = useState([]);
 
+
+  const [line, setLine] = useState({
+    options: {
+      chart: {
+        id: "line",
+      },
+      xaxis: {
+        categories: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
+        title: {
+          text: "Months",
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Purchase Amount(in Rs)",
+        },
+      },
+    },
+    series: [
+      {
+        name: "series",
+        data: [10, 20, 40, 50, 60, 20, 10, 35, 45, 70, 25, 70],
+      },
+    ],
+  });
+
+  const [profit, setProfit] = useState({
+    options: {
+      chart: {
+        id: "line",
+      },
+      xaxis: {
+        categories: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
+        title: {
+          text: "Months",
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Profit(in Rs)",
+        },
+      },
+    },
+    series: [
+      {
+        name: "series",
+        data: [10, 20, 40, 50, 60, 20, 10, 35, 45, 70, 25, 70],
+      },
+    ],
+  });
+
+  const [productData, setProductData] = useState({
+    options: {
+      chart: {
+        id: "basic-bar",
+      },
+      xaxis: {
+        title: {
+          text: "Products",
+        },
+        categories: [],
+      },
+      yaxis: {
+        title: {
+          text: "Quantity",
+        },
+      },
+    },
+    series: [
+      {
+        name: "Quantity",
+        data: [],
+      },
+    ],
+  });
+
   const [chart, setChart] = useState({
     options: {
       chart: {
@@ -32,6 +134,23 @@ function Dashboard() {
           "Nov",
           "Dec",
         ],
+        title: {
+          text: "Months", 
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Revenue(in Rs)", 
+        },
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            style: {
+              colors: ["#000000"], // Set the color of the data labels to black
+            },
+          },
+        },
       },
     },
     series: [
@@ -55,44 +174,98 @@ function Dashboard() {
     });
   };
 
+    // Update Line Data
+    const updateLineData = (salesData) => {
+      setLine({
+        ...line,
+        series: [
+          {
+            name: "Monthly Purchase Amount",
+            data: [...salesData],
+          },
+        ],
+      });
+    };
+
+    const updateProfitData = (salesData) => {
+      setProfit({
+        ...profit,
+        series: [
+          {
+            name: "Monthly Purchase Amount",
+            data: [...salesData],
+          },
+        ],
+      });
+    };
+const updateProductGraph=(data)=>{
+    const products = data[0].products;
+    const quantities = data[0].quantity;
+
+    // Update chart data with fetched data
+    setProductData({
+      options: {
+        ...productData.options,
+        xaxis: {
+          categories: products,
+        },
+      },
+      series: [
+        {
+          name: "Quantity",
+          data: quantities,
+        },
+      ],
+    });
+  };
+    
+
   const authContext = useContext(AuthContext);
 
   useEffect(() => {
     fetchTotalSaleAmount();
     fetchTotalPurchaseAmount();
-    fetchStoresData();
+    fetchSuppliersData();
     fetchProductsData();
     fetchMonthlySalesData();
+    fetchMonthlyPurchaseData();
+    fetchStock();
+    fetchProfit();
   }, []);
 
   // Fetching total sales amount
   const fetchTotalSaleAmount = () => {
     fetch(
-      `http://localhost:4000/api/sales/get/${authContext.user}/totalsaleamount`
+      `https://bizminds-backend.onrender.com/api/sales/get/totalsaleamount/${authContext.user}`
     )
       .then((response) => response.json())
-      .then((datas) => setSaleAmount(datas.totalSaleAmount));
+      .then((data) => {
+        console.log(data);
+        setSaleAmount(data.Total_Sales_Amount)
+    }).catch((err) => console.log(err));
   };
 
   // Fetching total purchase amount
   const fetchTotalPurchaseAmount = () => {
     fetch(
-      `http://localhost:4000/api/purchase/get/${authContext.user}/totalpurchaseamount`
+      `https://bizminds-backend.onrender.com/api/purchase/get/totalpurchaseamount/${authContext.user}`
     )
       .then((response) => response.json())
-      .then((datas) => setPurchaseAmount(datas.totalPurchaseAmount));
+      .then((datas) => setPurchaseAmount(datas.TotalAmount))
+      .catch((err) => console.log(err));
   };
 
   // Fetching all stores data
-  const fetchStoresData = () => {
-    fetch(`http://localhost:4000/api/store/get/${authContext.user}`)
+  const fetchSuppliersData = () => {
+    fetch(`https://bizminds-backend.onrender.com/api/suppliers/${0}`)
       .then((response) => response.json())
-      .then((datas) => setStores(datas));
+      .then((datas) => setStores(datas))
+      .catch((err) => console.log(err));
   };
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
+    fetch(`https://bizminds-backend.onrender.com/api/product/getAllProducts`)
       .then((response) => response.json())
       .then((datas) => setProducts(datas))
       .catch((err) => console.log(err));
@@ -100,17 +273,53 @@ function Dashboard() {
 
   // Fetching Monthly Sales
   const fetchMonthlySalesData = () => {
-    fetch(`http://localhost:4000/api/sales/getmonthly`)
+    fetch(`https://bizminds-backend.onrender.com/api/sales/${authContext.user}/12months_sales`)
       .then((response) => response.json())
-      .then((datas) => updateChartData(datas.salesAmount))
+      .then((salesData) => {
+        const twelveMonthsArray = Array.from({ length: 12 }, (_, i) => {
+          const foundMonth = salesData.find(data => data._id.month === i + 1);
+          return foundMonth ? foundMonth.totalSalesAmount : 0;
+        });
+        updateChartData(twelveMonthsArray)
+      })
       .catch((err) => console.log(err));
   };
+
+  // Fetching Monthly Purchases
+  const fetchMonthlyPurchaseData = () => {
+    fetch(`https://bizminds-backend.onrender.com/api/purchase/monthwise/${authContext.user}`)
+      .then((response) => response.json())
+      .then((salesData) => {
+        updateLineData(salesData);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const fetchStock=()=>{
+    fetch(`https://bizminds-backend.onrender.com/api/stocks/inventory/${authContext.user}`)
+    .then((response) => response.json())
+    .then((stockData) => {
+      console.log(stockData)
+      updateProductGraph(stockData);
+    })
+    .catch((err) => console.log(err));
+  }
+
+  const fetchProfit=()=>{
+    fetch(`https://insights-bizminds.onrender.com/monthwiseProfit?merchantId=${authContext.user}`)
+    .then((response) => response.json())
+    .then((profitData) => {
+      console.log(profitData)
+      updateProfitData(profitData);
+    })
+    .catch((err) => console.log(err));
+  }
 
   return (
     <>
       <div className="grid grid-cols-1 col-span-12 lg:col-span-10 gap-6 md:grid-cols-3 lg:grid-cols-4  p-4 ">
         <article className="flex flex-col gap-4 rounded-lg border  border-gray-100 bg-white p-6  ">
-          <div className="inline-flex gap-2 self-end rounded bg-green-100 p-1 text-green-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-green-100 p-1 text-green-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -127,11 +336,11 @@ function Dashboard() {
             </svg>
 
             <span className="text-xs font-medium"> 67.81% </span>
-          </div>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
-              Sales
+              Total Sales Amount
             </strong>
 
             <p>
@@ -139,13 +348,13 @@ function Dashboard() {
                 ₹{saleAmount}
               </span>
 
-              <span className="text-xs text-gray-500"> from ₹240.94 </span>
+              {/* <span className="text-xs text-gray-500"> from ₹240.94 </span> */}
             </p>
           </div>
         </article>
 
         <article className="flex flex-col  gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -162,11 +371,11 @@ function Dashboard() {
             </svg>
 
             <span className="text-xs font-medium"> 67.81% </span>
-          </div>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
-              Purchase
+              Total Purchase Amount
             </strong>
 
             <p>
@@ -175,12 +384,12 @@ function Dashboard() {
                 ₹{purchaseAmount}{" "}
               </span>
 
-              <span className="text-xs text-gray-500"> from ₹404.32 </span>
+              {/* <span className="text-xs text-gray-500"> from ₹404.32 </span> */}
             </p>
           </div>
         </article>
         <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -197,7 +406,7 @@ function Dashboard() {
             </svg>
 
             <span className="text-xs font-medium"> 67.81% </span>
-          </div>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
@@ -215,7 +424,7 @@ function Dashboard() {
           </div>
         </article>
         <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -232,11 +441,11 @@ function Dashboard() {
             </svg>
 
             <span className="text-xs font-medium"> 67.81% </span>
-          </div>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
-              Total Stores
+              Total Suppliers
             </strong>
 
             <p>
@@ -249,20 +458,45 @@ function Dashboard() {
             </p>
           </div>
         </article>
-        <div className="flex flex-col justify-around bg-white rounded-lg py-8 col-span-full justify-center">
+        <div className="flex bg-white rounded-lg py-8 col-span-full justify-between">
           <div>
             <Chart
               options={chart.options}
               series={chart.series}
               type="bar"
-              width="500"
+              width="550"
             />
           </div>
-        <div>
-        
-            
+          <div>
+            <Chart
+              options={line.options}
+              series={line.series}
+              type="line" 
+              width="550"
+            />
           </div>
         </div>
+        <div className="flex bg-white rounded-lg py-8 col-span-full justify-between">
+          <div>
+            <Chart
+              options={profit.options}
+              series={profit.series}
+              type="line" 
+              width="550"
+            />
+          </div>
+          <div>
+            <Chart
+              options={productData.options}
+              series={productData.series}
+              type="bar"
+              height={350}
+              width={500}
+            />
+          </div>
+        </div>
+
+        {/* <iframe width="350" height="430" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/16d4ea44-dcb1-4fec-b19b-0335a2e8b33a"></iframe> */}
       </div>
     </>
   );

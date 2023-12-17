@@ -13,7 +13,9 @@ function Layout() {
         <div className="col-span-2 h-screen sticky top-0 hidden lg:flex">
           <SideMenu />
         </div>
-        <Outlet />
+        <div className="col-span-10"> 
+          <Outlet />
+        </div>
       </div>
     </>
   );

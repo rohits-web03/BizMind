@@ -20,14 +20,15 @@ function Inventory() {
 
   useEffect(() => {
     fetchProductsData();
-    fetchSalesData();
+    // fetchSalesData();
   }, [updatePage]);
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
+    fetch(`https://bizminds-backend.onrender.com/api/stocks/inventory/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         setAllProducts(data);
       })
       .catch((err) => console.log(err));
@@ -35,7 +36,7 @@ function Inventory() {
 
   // Fetching Data of Search Products
   const fetchSearchData = () => {
-    fetch(`http://localhost:4000/api/product/search?searchTerm=${searchTerm}`)
+    fetch(`https://bizminds-backend.onrender.com/api/product/search?searchTerm=${searchTerm}`)
       .then((response) => response.json())
       .then((data) => {
         setAllProducts(data);
@@ -45,7 +46,7 @@ function Inventory() {
 
   // Fetching all stores data
   const fetchSalesData = () => {
-    fetch(`http://localhost:4000/api/store/get/${authContext.user}`)
+    fetch(`https://bizminds-backend.onrender.com/api/store/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         setAllStores(data);
@@ -68,8 +69,8 @@ function Inventory() {
   // Delete item
   const deleteItem = (id) => {
     console.log("Product ID: ", id);
-    console.log(`http://localhost:4000/api/product/delete/${id}`);
-    fetch(`http://localhost:4000/api/product/delete/${id}`)
+    console.log(`https://bizminds-backend.onrender.com/api/product/delete/${id}`);
+    fetch(`https://bizminds-backend.onrender.com/api/product/delete/${id}`)
       .then((response) => response.json())
       .then((data) => {
         setUpdatePage(!updatePage);
@@ -98,7 +99,7 @@ function Inventory() {
                 Total Products
               </span>
               <span className="font-semibold text-gray-600 text-base">
-                {products.length}
+                {products[0].products.length}
               </span>
               <span className="font-thin text-gray-400 text-xs">
                 Last 7 days

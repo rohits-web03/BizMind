@@ -28,7 +28,7 @@ function PurchaseDetails() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:3000/api/stocks/inventory/${authContext.user}`)
+    fetch(`https://insights-bizminds.onrender.com/api/stocks/inventory/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data[0].products);
