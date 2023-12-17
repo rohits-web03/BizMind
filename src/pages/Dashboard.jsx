@@ -3,6 +3,7 @@ import Chart from "react-apexcharts";
 import AuthContext from "../AuthContext";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import Chatbot from "../components/chatbot";
 
 
 
@@ -495,8 +496,7 @@ const updateProductGraph=(data)=>{
             />
           </div>
         </div>
-
-        {/* <iframe width="350" height="430" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/16d4ea44-dcb1-4fec-b19b-0335a2e8b33a"></iframe> */}
+          <Chatbot />
       </div>
     </>
   );
